@@ -4,8 +4,10 @@ from predict import predict
 
 class MLPipeline:
 
-    def train_model(self, ticker):
-        return train(ticker)
+    def train_model(self, dataframe):
 
-    def predict_signal(self, ticker):
-        return predict(ticker)
+        return train(dataframe)
+
+    def predict_signal(self, dataframe):
+
+        return predict(dataframe)
