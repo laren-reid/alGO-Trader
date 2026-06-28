@@ -1,20 +1,13 @@
-from train import FEATURE_COLUMNS
+from train import train
+from predict import predict
 
 
-def backtest(model, df):
+class MLPipeline:
 
-    df = df.copy()
+    def train_model(self, dataframe):
 
-    signals = model.predict(df[FEATURE_COLUMNS])
+        return train(dataframe)
 
-    df["Signal"] = signals
+    def predict_signal(self, dataframe):
 
-    df["StrategyReturn"] = (
-        df["Signal"].shift(1) * df["Return"]
-    )
-
-    cumulative = (
-        1 + df["StrategyReturn"]
-    ).cumprod()
-
-    return cumulative.iloc[-1]
+        return predict(dataframe)
