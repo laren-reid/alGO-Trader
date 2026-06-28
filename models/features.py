@@ -1,4 +1,8 @@
-def add_features(df):
+import pandas as pd
+
+def add_features(df: pd.DataFrame) -> pd.DataFrame:
+
+    df = df.copy()
 
     df["Return"] = df["Close"].pct_change()
 
@@ -9,6 +13,9 @@ def add_features(df):
 
     df["Momentum"] = df["Close"] - df["Close"].shift(5)
 
-    df["Target"] = (df["Close"].shift(-1) > df["Close"]).astype(int)
+    # Predict whether tomorrow closes higher than today
+    df["Target"] = (
+        df["Close"].shift(-1) > df["Close"]
+    ).astype(int)
 
     return df.dropna()
