@@ -1,20 +1,16 @@
-import pandas as pd
 import joblib
 
 from features import add_features
+from train import FEATURE_COLUMNS
 
 
-def predict(ticker):
-
-    model = joblib.load(f"models/{ticker}_model.pkl")
-
-    df = pd.read_csv(f"data/{ticker}.csv")
+def predict(df):
 
     df = add_features(df)
 
-    features = ["SMA10", "SMA20", "Return", "Volatility", "Momentum"]
+    model = joblib.load("stock_model.pkl")
 
-    latest = df[features].iloc[[-1]]
+    latest = df[FEATURE_COLUMNS].iloc[[-1]]
 
     prediction = model.predict(latest)[0]
 
