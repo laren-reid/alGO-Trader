@@ -1,31 +1,56 @@
-# ML Module
+# Machine Learning Module – Algorithmic Trading System
 
 ## Overview
 
-This module provides stock market prediction functionality for the Algorithmic Trading System.
+This module is the machine learning component of an algorithmic trading system. It takes historical stock market data (provided as a Pandas DataFrame from a separate data-fetching module) and processes it to generate predictive signals for future price movement.
 
-Features:
-- Feature engineering
-- Model training
-- Prediction generation
-- Backtesting
+The module is designed to be independent from the UI, data acquisition, and trading execution layers. Its only responsibility is to transform financial data into predictions using machine learning.
 
-## Dataset Format
+---
 
-CSV files should be stored in:
+## What the Module Does
 
-data/
+- Receives stock market data as a Pandas DataFrame  
+- Engineers technical features such as moving averages, momentum, volatility, and returns  
+- Trains a supervised learning model (Random Forest Classifier)  
+- Predicts whether the next-day stock price will go up or down  
+- Outputs a prediction along with a confidence score  
+- Includes a simple backtesting function to evaluate performance on historical data  
 
-Example:
+---
 
-Date,Open,High,Low,Close,Volume
+## Input Format
 
-## Usage
+The module expects data in the following format:
+Open, High, Low, Close, Volume
 
-Train model:
+This data is provided externally by a Data Fetcher module (Yahoo Finance API component).
 
-```python
-from ml_pipeline import MLPipeline
+---
 
-ml = MLPipeline()
-ml.train_model("AAPL")
+## Machine Learning Approach
+
+The model uses a Random Forest Classifier to perform binary classification:
+
+- `1` → Price will go up  
+- `0` → Price will go down  
+
+### Features used:
+- Simple Moving Averages (SMA10, SMA20)  
+- Momentum  
+- Volatility  
+- Daily returns  
+
+The model is trained on historical labeled price movements.
+
+---
+
+## Output
+
+The prediction output includes:
+
+```json
+{
+  "prediction": 1,
+  "confidence": 0.73
+}
