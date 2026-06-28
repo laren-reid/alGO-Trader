@@ -1,11 +1,20 @@
-def backtest(model, df, features):
+from train import FEATURE_COLUMNS
+
+
+def backtest(model, df):
 
     df = df.copy()
 
-    df["signal"] = model.predict(df[features])
+    signals = model.predict(df[FEATURE_COLUMNS])
 
-    df["strategy_return"] = df["signal"].shift(1) * df["Return"]
+    df["Signal"] = signals
 
-    cumulative = (1 + df["strategy_return"]).cumprod()
+    df["StrategyReturn"] = (
+        df["Signal"].shift(1) * df["Return"]
+    )
+
+    cumulative = (
+        1 + df["StrategyReturn"]
+    ).cumprod()
 
     return cumulative.iloc[-1]
