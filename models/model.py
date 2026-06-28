@@ -1,13 +1,10 @@
 from sklearn.ensemble import RandomForestClassifier
 
-def train_model(X_train, y_train):
 
-    model = RandomForestClassifier(
+def create_model():
+
+    return RandomForestClassifier(
         n_estimators=150,
         max_depth=6,
         random_state=42
     )
-
-    model.fit(X_train, y_train)
-
-    return model
