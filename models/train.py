@@ -1,25 +1,33 @@
-import pandas as pd
 import joblib
 
 from features import add_features
-from model import train_model
+from model import create_model
 
 
-def train(ticker):
+FEATURE_COLUMNS = [
+    "SMA10",
+    "SMA20",
+    "Return",
+    "Volatility",
+    "Momentum"
+]
 
-    df = pd.read_csv(f"data/{ticker}.csv")
+
+def train(df):
 
     df = add_features(df)
 
-    features = ["SMA10", "SMA20", "Return", "Volatility", "Momentum"]
-
     split = int(len(df) * 0.8)
 
-    X_train = df[features][:split]
-    y_train = df["Target"][:split]
+    train_df = df.iloc[:split]
 
-    model = train_model(X_train, y_train)
+    X_train = train_df[FEATURE_COLUMNS]
+    y_train = train_df["Target"]
 
-    joblib.dump(model, f"models/{ticker}_model.pkl")
+    model = create_model()
+
+    model.fit(X_train, y_train)
+
+    joblib.dump(model, "stock_model.pkl")
 
     return model
