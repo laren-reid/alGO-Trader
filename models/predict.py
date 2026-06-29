@@ -1,7 +1,19 @@
 import joblib
-
 from features import add_features
 from train import FEATURE_COLUMNS
+
+
+def generate_signal(prediction: int, confidence: float) -> str:
+
+    CONFIDENCE_THRESHOLD = 0.70
+
+    if confidence < CONFIDENCE_THRESHOLD:
+        return "HOLD"
+
+    if prediction == 1:
+        return "BUY"
+    else:
+        return "SELL"
 
 
 def predict(df):
@@ -10,13 +22,16 @@ def predict(df):
 
     model = joblib.load("stock_model.pkl")
 
-    latest = df[FEATURE_COLUMNS].iloc[[-1]]
+    X = df[FEATURE_COLUMNS].iloc[[-1]]
 
-    prediction = model.predict(latest)[0]
+    prediction = model.predict(X)[0]
 
-    confidence = model.predict_proba(latest)[0][1]
+    confidence = max(model.predict_proba(X)[0])
+
+    signal = generate_signal(prediction, confidence)
 
     return {
         "prediction": int(prediction),
-        "confidence": float(confidence)
+        "confidence": float(confidence),
+        "signal": signal
     }
