@@ -7,11 +7,15 @@ from train import FEATURE_COLUMNS
 
 def generate_signal(prediction: int, confidence: float) -> str:
 
-    CONFIDENCE_THRESHOLD = 0.70
+    BUY_THRESHOLD = 0.60
+    SELL_THRESHOLD = 0.60
+    HOLD_THRESHOLD = 0.60
 
-    if confidence < CONFIDENCE_THRESHOLD:
+    # If model is not confident → HOLD
+    if confidence < HOLD_THRESHOLD:
         return "HOLD"
 
+    # Confident prediction
     if prediction == 1:
         return "BUY"
     else:
@@ -20,31 +24,15 @@ def generate_signal(prediction: int, confidence: float) -> str:
 
 def predict(df: pd.DataFrame):
 
-    # ---------------------------
-    # Feature engineering
-    # ---------------------------
     df = add_features(df)
 
-    # ---------------------------
-    # Load trained model
-    # ---------------------------
     model = joblib.load("stock_model.pkl")
 
-    # ---------------------------
-    # Get latest data point ONLY
-    # ---------------------------
     X = df[FEATURE_COLUMNS].iloc[[-1]]
 
-    # ---------------------------
-    # Prediction
-    # ---------------------------
     prediction = model.predict(X)[0]
-
     confidence = max(model.predict_proba(X)[0])
 
-    # ---------------------------
-    # Convert to trading signal
-    # ---------------------------
     signal = generate_signal(prediction, confidence)
 
     return {
