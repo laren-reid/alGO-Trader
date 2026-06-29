@@ -1,21 +1,42 @@
-import joblib
+import pandas as pd
+import numpy as np
+
 from train import FEATURE_COLUMNS
+from features import add_features
 
 
-def backtest(df):
+def backtest(model, df: pd.DataFrame):
 
-    df = df.copy()
+    df = add_features(df).copy()
 
-    model = joblib.load("stock_model.pkl")
+    predictions = model.predict(df[FEATURE_COLUMNS])
 
-    X = df[FEATURE_COLUMNS]
+    # ---------------------------
+    # Map signals
+    # ---------------------------
+    df["Signal"] = predictions
 
-    signals = model.predict(X)
+    df["Position"] = df["Signal"].map({
+        1: 1,     # BUY → long
+        0: -1     # SELL → short
+    })
 
-    df["Signal"] = signals
+    # HOLD = 0 position
+    df["Position"] = df["Position"].fillna(0)
 
-    df["StrategyReturn"] = df["Signal"].shift(1) * df["Return"]
+    # ---------------------------
+    # Market returns
+    # ---------------------------
+    df["MarketReturn"] = df["Close"].pct_change()
 
-    cumulative = (1 + df["StrategyReturn"]).cumprod()
+    # ---------------------------
+    # Strategy returns
+    # ---------------------------
+    df["StrategyReturn"] = df["Position"].shift(1) * df["MarketReturn"]
 
-    return cumulative.iloc[-1]
+    df["CumulativeReturn"] = (1 + df["StrategyReturn"].fillna(0)).cumprod()
+
+    return {
+        "final_return": float(df["CumulativeReturn"].iloc[-1]),
+        "data": df
+    }
