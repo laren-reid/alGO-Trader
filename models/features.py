@@ -1,21 +1,38 @@
 import pandas as pd
 
+from indicators import (
+    add_sma,
+    add_ema,
+    add_rsi,
+    add_macd,
+    add_bollinger
+)
+
+
 def add_features(df: pd.DataFrame) -> pd.DataFrame:
 
     df = df.copy()
 
+    # ---------------------------
+    # BASIC FEATURES
+    # ---------------------------
     df["Return"] = df["Close"].pct_change()
-
-    df["SMA10"] = df["Close"].rolling(10).mean()
-    df["SMA20"] = df["Close"].rolling(20).mean()
-
+    df["Momentum"] = df["Close"] - df["Close"].shift(5)
     df["Volatility"] = df["Return"].rolling(10).std()
 
-    df["Momentum"] = df["Close"] - df["Close"].shift(5)
+    # ---------------------------
+    # TECHNICAL INDICATORS
+    # ---------------------------
+    df = add_sma(df, 10)
+    df = add_sma(df, 20)
+    df = add_ema(df, 10)
+    df = add_rsi(df)
+    df = add_macd(df)
+    df = add_bollinger(df)
 
-    # Predict whether tomorrow closes higher than today
-    df["Target"] = (
-        df["Close"].shift(-1) > df["Close"]
-    ).astype(int)
+    # ---------------------------
+    # TARGET LABEL
+    # ---------------------------
+    df["Target"] = (df["Close"].shift(-1) > df["Close"]).astype(int)
 
     return df.dropna()
