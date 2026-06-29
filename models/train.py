@@ -5,11 +5,20 @@ from model import create_model
 
 
 FEATURE_COLUMNS = [
-    "SMA10",
-    "SMA20",
     "Return",
+    "Momentum",
     "Volatility",
-    "Momentum"
+
+    "sma_10",
+    "sma_20",
+    "ema_10",
+
+    "rsi",
+    "macd",
+    "macd_signal",
+    "macd_hist",
+
+    "bb_position"
 ]
 
 
