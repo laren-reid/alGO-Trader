@@ -1,16 +1,25 @@
 import tkinter as tk
+import tkinter.ttk as ttk
 
-root=tk.Tk()
-root.title("Test Python GUI")
-root.geometry("600x400")
+window=tk.Tk()
+window.title("Algorithmic Trader Dashboard")
+window.geometry("800x500")
+window.configure(padx=15, pady=15)
 
-def on_button_click():
-    label.config(text="Success")
-    
-label = tk.Label(root, text="Welcome! Click the button below.", font=("Arial", 14))
-button = tk.Button(root, text="I like to eat food and swim", command=on_button_click, bg="blue", fg="white")
+big_button = tk.Frame(window)
+big_button.pack(fill="x", pady=(0,15))
 
-label.pack(pady=20)
-button.pack(pady=10)
+chframe = tk.LabelFrame(big_button, text="", bd=2, relief="solid", width=350, height=200)
+chframe.pack_propagate(False)  # Maintain explicit size
+chframe.pack(side="left", padx=(0, 20))
 
-root.mainloop()
+chlabel = tk.Label(chframe, text="- NULL -", font=("Maven Pro", 12, "bold"))
+chlabel.pack(expand=True)
+
+conf_bar_frame = tk.Frame(big_button)
+conf_bar_frame.pack(side="left", fill="both", expand=True)
+
+conf_bar_label = tk.Label(conf_bar_frame, text="Confidence : NULL", font=("Maven Pro", 12, "bold"))
+conf_bar_label.pack(fill="x", pady=(0,15))
+
+window.mainloop()
