@@ -32,4 +32,13 @@ t1frame = tk.LabelFrame(tab1, text="", bd=2, relief="solid", width=1450, height=
 t1frame.pack_propagate(False)
 t1frame.pack(side="left", padx=(0, 20))
 
+t1btns = tk.Frame(tab1)
+t1btns.pack(fill=tk.X, pady=(5, 5))
+
+btn_AAPL = tk.Button(master=t1btns, text="AAPL", font=("Maven Pro", 12, "bold"))
+btn_AAPL.pack(fill=tk.X, padx=(0, 0), expand=True)
+
+btn_Predict = tk.Button(master=t1btns, text="Predict", font=("Maven Pro", 12, "bold"))
+btn_Predict.pack(fill=tk.X, padx=(0, 0), expand=True)
+
 window.mainloop()
