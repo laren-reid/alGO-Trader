@@ -25,20 +25,60 @@ conf_bar_label.pack(fill=tk.X, pady=(0,0))
 conf_bar = tk.LabelFrame(conf_bar_frame, text="", bd=2, relief="solid", width=600, height=50)
 conf_bar.pack(side="left", padx=(0, 0))
 
-tab1 = tk.Frame(window)
+tab1 = ttk.Frame(tabs)
 tab1.pack(fill=tk.X, pady=(0, 15))
 
-t1frame = tk.LabelFrame(tab1, text="", bd=2, relief="solid", width=1450, height=200)
+tab2 = ttk.Frame(tabs)
+tab2.pack(fill=tk.X, pady=(0, 15))
+
+tabs.add(tab1, text="ENTER")
+tabs.add(tab2, text="INDICATORS")
+
+t1frame = tk.LabelFrame(tab1, text="TICKER SUBMISSION PANEL", bd=2, relief="solid", width=1450, height=200)
 t1frame.pack_propagate(False)
 t1frame.pack(side="left", padx=(0, 20))
 
-t1btns = tk.Frame(tab1)
-t1btns.pack(fill=tk.X, pady=(5, 5))
+tickerlbl = tk.Label(t1frame, text="Enter Stock Ticker:", font=("Maven Pro", 11))
+tickerlbl.pack(side="left", padx=(0, 10))
 
-btn_AAPL = tk.Button(master=t1btns, text="AAPL", font=("Maven Pro", 12, "bold"))
-btn_AAPL.pack(fill=tk.X, padx=(0, 0), expand=True)
+tickerinp = tk.Entry(t1frame, font=("Maven Pro", 11), width=15)
+tickerinp.pack(side="left", padx=(0, 15))
 
-btn_Predict = tk.Button(master=t1btns, text="Predict", font=("Maven Pro", 12, "bold"))
-btn_Predict.pack(fill=tk.X, padx=(0, 0), expand=True)
+def handle_submit():
+    user_text = tickerinp.get() 
+    print(f"User submitted ticker: {user_text.upper()}")
+    
+    tickerinp.delete(0, tk.END)
+
+rsi_var = tk.StringVar(value="0.00")
+macd_var = tk.StringVar(value="0.00")
+ema_var = tk.StringVar(value="0.00")
+
+row_rsi = tk.Frame(tab2)
+row_rsi.pack(fill=tk.X, pady=4, padx=10)
+
+title_rsilbl = tk.Label(row_rsi, text="RSI:", font=("Arial", 10, "bold"), width=8, anchor="w")
+title_rsilbl.pack(side=tk.LEFT)
+
+value_rsilbl = tk.Label(row_rsi, textvariable=rsi_var, font=("Arial", 10))
+value_rsilbl.pack(side=tk.LEFT, padx=5)
+
+row_macd = tk.Frame(tab2)
+row_macd.pack(fill=tk.X, pady=4, padx=10)
+
+title_macdlbl = tk.Label(row_macd, text="MACD:", font=("Arial", 10, "bold"), width=8, anchor="w")
+title_macdlbl.pack(side=tk.LEFT)
+
+value_macdlbl = tk.Label(row_macd, textvariable=macd_var, font=("Arial", 10))
+value_macdlbl.pack(side=tk.LEFT, padx=5)
+
+row_ema = tk.Frame(tab2)
+row_ema.pack(fill=tk.X, pady=4, padx=10)
+
+title_emalbl = tk.Label(row_ema, text="EMA:", font=("Arial", 10, "bold"), width=8, anchor="w")
+title_emalbl.pack(side=tk.LEFT)
+
+value_emalbl = tk.Label(row_ema, textvariable=ema_var, font=("Arial", 10))
+value_emalbl.pack(side=tk.LEFT, padx=5)
 
 window.mainloop()
