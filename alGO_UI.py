@@ -9,6 +9,9 @@ window.configure(padx=15, pady=15)
 big_button = tk.Frame(window)
 big_button.pack(fill=tk.X, pady=(0,30))
 
+tabs = ttk.Notebook(window)
+tabs.pack(fill="both", expand=True, side="bottom", pady=(0,15))
+
 chframe = tk.LabelFrame(big_button, text="", bd=2, relief="solid", width=350, height=200)
 chframe.pack_propagate(False)
 chframe.pack(side="left", padx=(0, 20))
