@@ -2,10 +2,10 @@
 Demo script for the algo-trader ML module.
 
 Runs the full pipeline end to end:
-  1. Get historical price data (real data via yfinance if available/online, otherwise a synthetic random-walk fallback so the demo still runs offline)
-  2. Train the model, printing held-out evaluation metrics
-  3. Generate a live prediction/signal from the most recent data
-  4. Backtest strictly on held-out (out-of-sample) data, with a buy-and-hold comparison and an optional transaction-cost scenario
+1. Get historical price data (real data via yfinance if available/online, otherwise a synthetic random-walk fallback so the demo still runs offline)
+2. Train the model, printing held-out evaluation metrics
+3. Generate a live prediction/signal from the most recent data
+4. Backtest strictly on held-out (out-of-sample) data, with a buy-and-hold comparison and an optional transaction-cost scenario
 
 Usage:
     python demo.py                # uses default ticker (AAPL)
