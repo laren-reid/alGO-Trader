@@ -1,0 +1,162 @@
+========================================================
+ALGO-TRADER PROJECT — STEP BY STEP SETUP & TESTING GUIDE
+========================================================
+
+------------------------
+PART 1: ONE-TIME SETUP
+------------------------
+
+1. Unzip the project folder somewhere on your computer
+   (e.g. Desktop/algo-trader)
+
+2. Open VS Code and go to:
+   File > Open Folder... > select the "algo-trader" folder
+
+3. Open the built-in terminal:
+   Windows/Linux: Ctrl + `
+   Mac:           Cmd + `
+
+4. Create a virtual environment (keeps this project's packages
+   separate from everything else on your computer):
+
+       python -m venv venv
+
+   (If "python" isn't recognized, try "python3" instead.)
+
+5. Activate the virtual environment:
+
+       Windows:     venv\Scripts\activate
+       Mac/Linux:   source venv/bin/activate
+
+   You'll know it worked if you see "(venv)" at the start of
+   your terminal prompt.
+
+6. If VS Code pops up "Select this interpreter for your
+   workspace?" — click Yes.
+   If it doesn't ask automatically:
+       Ctrl+Shift+P (Cmd+Shift+P on Mac)
+       > type "Python: Select Interpreter"
+       > choose the one inside the venv folder
+
+7. Install all required packages in one step:
+
+       pip install -r requirements.txt
+
+8. Confirm everything installed correctly:
+
+       python -c "import yfinance, pandas, numpy, sklearn, joblib; print('all good')"
+
+   You should see: all good
+
+
+------------------------------
+PART 2: RUN THE FULL PIPELINE
+------------------------------
+
+This trains a model, evaluates it, generates a prediction,
+and backtests it — all in one command.
+
+    python demo.py AAPL
+
+Try other tickers too:
+
+    python demo.py TSLA
+    python demo.py MSFT
+    python demo.py JNJ
+
+What to look for in the output:
+  - "[Train] Accuracy" vs "majority_class_baseline"
+      -> if accuracy is NOT clearly above baseline, the model
+         isn't actually adding predictive value on that ticker
+  - "Signal: BUY / SELL / HOLD" -> the live recommendation
+  - "Zero-cost strategy return" vs "Buy-and-hold return"
+      -> is the strategy actually beating just holding the stock?
+
+Note: this also saves a trained model to
+models/stock_model.pkl, which the UI needs (see Part 3).
+
+
+------------------------------
+PART 3: RUN THE INTERACTIVE UI
+------------------------------
+
+1. Make sure you've run demo.py at least once first (Part 2),
+   so a trained model exists.
+
+2. Launch the dashboard:
+
+       python UI.py
+
+3. In the window that opens:
+   - Type a ticker (e.g. AAPL) in the "Enter Stock Ticker" box
+   - Press Enter or click Submit
+   - Wait a moment while it fetches live data (status text
+     will say "Fetching...")
+   - The left panel shows BUY / SELL / HOLD
+   - The right panel shows a confidence bar + percentage
+
+4. Click the "INDICATORS" tab to see the latest RSI, MACD,
+   and EMA values for that ticker.
+
+
+-----------------------------------
+PART 4: TRYING DIFFERENT VARIATIONS
+-----------------------------------
+
+A) Different tickers (compare a volatile stock vs a stable one)
+
+       python demo.py TSLA
+       python demo.py KO
+
+B) Different transaction costs (edit the --cost flag)
+
+       python demo.py AAPL --cost 0.0      (no trading cost)
+       python demo.py AAPL --cost 0.001    (0.1% per trade)
+       python demo.py AAPL --cost 0.005    (0.5% per trade)
+
+C) Different confidence threshold (how sure the model must be
+   before it says BUY/SELL instead of HOLD)
+
+   Open config.py, find this line:
+
+       CONFIDENCE_THRESHOLD = 0.60
+
+   Change it to 0.55, 0.65, 0.70, etc., save the file, and
+   re-run demo.py to see how the signal frequency changes.
+
+D) Force offline/synthetic data (no internet needed, useful
+   for testing the code itself without hitting Yahoo Finance)
+
+       python demo.py AAPL --synthetic
+
+
+------------------------
+TROUBLESHOOTING
+------------------------
+
+"python: command not found"
+  -> try "python3" instead of "python"
+
+"No module named yfinance" (or pandas/numpy/sklearn)
+  -> make sure venv is activated (see (venv) in prompt)
+  -> re-run: pip install -r requirements.txt
+
+"No data found for [TICKER]"
+  -> double check the ticker symbol is correct
+  -> check your internet connection
+  -> some school/office networks block Yahoo Finance —
+     try from a different network, or use --synthetic to
+     confirm the code itself works
+
+"No trained model found" (when running UI.py)
+  -> run "python demo.py AAPL" first to create
+     models/stock_model.pkl, then launch UI.py again
+
+UI window doesn't open / crashes immediately
+  -> tkinter needs a display — this won't work over a
+     headless/remote terminal with no screen. Run it on
+     your local machine directly.
+
+========================================================
+END OF GUIDE
+========================================================
