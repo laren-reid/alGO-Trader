@@ -3,14 +3,17 @@ import pandas as pd
 
 #function to get historical data for a given ticker and date range, returns a pandas dataframe with the data
 def get_historical_data(ticker: str, date_start: str, date_end: str) -> pd.DataFrame:
-    
-    ticker = ticker.upper() # Ensure ticker is in uppercase format    
+
+    ticker = ticker.upper() # Ensure ticker is in uppercase format
     try: #error handling to ensure that the function does not break if there is an issue with data retrieval
-        df = yf.download(ticker, start=date_start, end=date_end) #donwload data from yfinance using the ticker and date range provided by the user
+        df = yf.download(ticker, start=date_start, end=date_end, progress=False) #download data from yfinance using the ticker and date range provided by the user
 
         if df.empty: #check if the dataframe is empty, if it is, print a message and return an empty dataframe
             print(f"[DataFetcher] No data found for {ticker}")
             return pd.DataFrame()
+
+        if isinstance(df.columns, pd.MultiIndex):
+            df.columns = df.columns.get_level_values(0)
 
         df.index = pd.to_datetime(df.index) # Ensure the index is in datetime format for easier handling of date-based operations
 
