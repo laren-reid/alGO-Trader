@@ -1,32 +1,41 @@
+import os
+import sys
+
 import joblib
 import pandas as pd
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from config import FEATURE_COLUMNS, MODEL_PATH, CONFIDENCE_THRESHOLD
 from features import add_features
-from train import FEATURE_COLUMNS
 
 
 def generate_signal(prediction: int, confidence: float) -> str:
-
-    BUY_THRESHOLD = 0.60
-    SELL_THRESHOLD = 0.60
-    HOLD_THRESHOLD = 0.60
-
-    # If model is not confident → HOLD
-    if confidence < HOLD_THRESHOLD:
+    # If model is not confident -> HOLD
+    if confidence < CONFIDENCE_THRESHOLD:
         return "HOLD"
 
     # Confident prediction
-    if prediction == 1:
-        return "BUY"
-    else:
-        return "SELL"
+    return "BUY" if prediction == 1 else "SELL"
 
 
 def predict(df: pd.DataFrame):
 
     df = add_features(df)
 
-    model = joblib.load("stock_model.pkl")
+    if df.empty:
+        raise ValueError(
+            "No rows left after feature engineering - not enough price history "
+            "was provided (indicators like SMA20/MACD need warm-up data before "
+            "the first row is usable)."
+        )
+
+    if not os.path.exists(MODEL_PATH):
+        raise FileNotFoundError(
+            f"No trained model found at {MODEL_PATH}. Run train.py first."
+        )
+
+    model = joblib.load(MODEL_PATH)
 
     X = df[FEATURE_COLUMNS].iloc[[-1]]
 
@@ -40,3 +49,4 @@ def predict(df: pd.DataFrame):
         "confidence": float(confidence),
         "signal": signal
     }
+
