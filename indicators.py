@@ -1,4 +1,3 @@
-import yfinance as yf
 import pandas as pd
 import numpy as np
 
@@ -10,6 +9,8 @@ def add_sma(df: pd.DataFrame, window: int) -> pd.DataFrame:
 def add_ema(df: pd.DataFrame, window: int) -> pd.DataFrame:
     df[f"ema_{window}"] = df["Close"].ewm(span=window, adjust=False).mean()
     return df
+
+# Uses a simple rolling mean of gains/losses.
 
 def add_rsi(df: pd.DataFrame, window: int = 14) -> pd.DataFrame:
     delta = df["Close"].diff()
@@ -36,3 +37,4 @@ def add_bollinger(df: pd.DataFrame, window: int = 20) -> pd.DataFrame:
     lower = sma - 2 * std
     df["bb_position"] = (df["Close"] - lower) / (upper - lower + 1e-9)
     return df
+
